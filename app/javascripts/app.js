@@ -39,8 +39,6 @@ window.App = {
       accounts = accs;
       account = accounts[0];
 
-      self.refreshBalance();
-
       // configure the page
       if (accounts){  // add accounts to the wallet drop-down menu 
         for (var i = 0; i < accounts.length; i++){
@@ -49,7 +47,9 @@ window.App = {
       };
       $("#wallet-select").on("change", function(event){
         //console.log(event);
-        console.log($(this).val().trim());
+        var selectedWallet = $(this).val().trim();
+        console.log(selectedWallet);
+        self.refreshBalance(selectedWallet);
       });
 
     });
@@ -61,13 +61,14 @@ window.App = {
     status.innerHTML = message;
   },
 
-  refreshBalance: function() {
+  refreshBalance: function(walletAddress) {
+    console.log("refreshing ", walletAddress);
     var self = this;
 
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
-      return meta.getBalance.call(account, {from: account});
+      return meta.getBalance.call(walletAddress, {from: walletAddress});
     }).then(function(value) {
       var balance_element = document.getElementById("balance");
       balance_element.innerHTML = value.valueOf();
@@ -91,7 +92,7 @@ window.App = {
       return meta.sendCoin(receiver, amount, {from: account});
     }).then(function() {
       self.setStatus("Transaction complete!");
-      self.refreshBalance();
+      self.refreshBalance(account);
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error sending coin; see log.");
