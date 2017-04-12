@@ -98,7 +98,12 @@ window.App = {
   sendCoin: function() {
     var self = this;
 
-    var fromAccount = $("#wallet-select").val().trim();
+    var fromAccount = $("#wallet-select").val().trim();  // pull the from address from the dropdown 
+    if (fromAccount === "none") { // check to make sure the dropdown address is valid 
+      self.setStatus("The 'from' address you selected is not valid");
+      return;
+    }
+
     var amount = parseInt(document.getElementById("amount").value);
     var receiver = document.getElementById("receiver").value;
 
