@@ -40,12 +40,12 @@ window.App = {
       account = accounts[0];
 
       // configure the page
-      if (accounts){  // add accounts to the wallet drop-down menu 
+      if (accounts){  // add accounts to the wallet drop-down menu
         for (var i = 0; i < accounts.length; i++){
           $("#wallet-select").append($("<option value='" + accounts[i] + "'>" + accounts[i] + "</option>" ));
         };
       };
-      $("#wallet-select").on("change", function(event){
+      $("#wallet-select").on("change", function(event){  // add balance refresh event on wallet dropdown 
         //console.log(event);
         var selectedWallet = $(this).val().trim();
         console.log(selectedWallet);
@@ -58,6 +58,16 @@ window.App = {
         // display wallet balance 
         self.refreshBalance(selectedWallet);
       });
+      $("#clipboard-copy-btn").on("click", function(){ // add copy-to-clipboard functionality
+        console.log("clipboard button test1")
+        var valueToCopy = document.createElement("input");
+        valueToCopy.setAttribute("value", document.getElementById("wallet-select").value);
+        console.log("valueToCopy", valueToCopy);
+        document.body.appendChild(valueToCopy);
+        valueToCopy.select();
+        document.execCommand("copy");
+        document.body.removeChild(valueToCopy);
+      })
 
     });
 
@@ -88,6 +98,12 @@ window.App = {
   sendCoin: function() {
     var self = this;
 
+    var fromAccount = $("#wallet-select").val().trim();  // pull the from address from the dropdown 
+    if (fromAccount === "none") { // check to make sure the dropdown address is valid 
+      self.setStatus("The 'from' address you selected is not valid");
+      return;
+    }
+
     var amount = parseInt(document.getElementById("amount").value);
     var receiver = document.getElementById("receiver").value;
 
@@ -96,10 +112,10 @@ window.App = {
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
-      return meta.sendCoin(receiver, amount, {from: account});
-    }).then(function() {
+      return meta.sendCoin(receiver, amount, {from: fromAccount});
+    }).then(function() {  // note: I've been having an issue getting past here 
       self.setStatus("Transaction complete!");
-      self.refreshBalance(account);
+      self.refreshBalance(fromAccount);
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error sending coin; see log.");
