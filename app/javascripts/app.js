@@ -27,7 +27,7 @@ window.App = {
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function(err, accs) {
       if (err != null) {
-        alert("There was an error fetching your accounts.");
+        alert("There was an error fetching your accounts.", err);
         return;
       }
 
@@ -40,7 +40,20 @@ window.App = {
       account = accounts[0];
 
       self.refreshBalance();
+
+      // configure the page
+      if (accounts){  // add accounts to the wallet drop-down menu 
+        for (var i = 0; i < accounts.length; i++){
+          $("#wallet-select").append($("<option value='" + accounts[i] + "'>" + accounts[i] + "</option>" ));
+        };
+      };
+      $("#wallet-select").on("change", function(event){
+        //console.log(event);
+        console.log($(this).val().trim());
+      });
+
     });
+
   },
 
   setStatus: function(message) {
