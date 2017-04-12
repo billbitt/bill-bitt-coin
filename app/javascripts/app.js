@@ -40,12 +40,12 @@ window.App = {
       account = accounts[0];
 
       // configure the page
-      if (accounts){  // add accounts to the wallet drop-down menu 
+      if (accounts){  // add accounts to the wallet drop-down menu
         for (var i = 0; i < accounts.length; i++){
           $("#wallet-select").append($("<option value='" + accounts[i] + "'>" + accounts[i] + "</option>" ));
         };
       };
-      $("#wallet-select").on("change", function(event){
+      $("#wallet-select").on("change", function(event){  // add balance refresh event on wallet dropdown 
         //console.log(event);
         var selectedWallet = $(this).val().trim();
         console.log(selectedWallet);
@@ -58,6 +58,16 @@ window.App = {
         // display wallet balance 
         self.refreshBalance(selectedWallet);
       });
+      $("#clipboard-copy-btn").on("click", function(){ // add copy-to-clipboard functionality
+        console.log("clipboard button test1")
+        var valueToCopy = document.createElement("input");
+        valueToCopy.setAttribute("value", document.getElementById("wallet-select").value);
+        console.log("valueToCopy", valueToCopy);
+        document.body.appendChild(valueToCopy);
+        valueToCopy.select();
+        document.execCommand("copy");
+        document.body.removeChild(valueToCopy);
+      })
 
     });
 
