@@ -49,6 +49,13 @@ window.App = {
         //console.log(event);
         var selectedWallet = $(this).val().trim();
         console.log(selectedWallet);
+        // handle case where no wallet is selected
+        if (selectedWallet === "none"){
+          var balance_element = document.getElementById("balance");
+          balance_element.innerHTML = "?";
+          return;
+        }
+        // display wallet balance 
         self.refreshBalance(selectedWallet);
       });
 
