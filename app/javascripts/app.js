@@ -98,6 +98,7 @@ window.App = {
   sendCoin: function() {
     var self = this;
 
+    var fromAccount = $("#wallet-select").val().trim();
     var amount = parseInt(document.getElementById("amount").value);
     var receiver = document.getElementById("receiver").value;
 
@@ -106,10 +107,10 @@ window.App = {
     var meta;
     MetaCoin.deployed().then(function(instance) {
       meta = instance;
-      return meta.sendCoin(receiver, amount, {from: account});
-    }).then(function() {
+      return meta.sendCoin(receiver, amount, {from: fromAccount});
+    }).then(function() {  // note: I've been having an issue getting past here 
       self.setStatus("Transaction complete!");
-      self.refreshBalance(account);
+      self.refreshBalance(fromAccount);
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error sending coin; see log.");
